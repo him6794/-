@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>創建歌曲</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e74c3c;
+            margin-top: 450px; /* 增加上邊距 */
+        }
+        form {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ecf0f1;
+            border-radius: 5px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
+        button {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        <h1>創建歌曲</h1>
+        
+        <label for="song_title">歌名:</label>
+        <input type="text" id="song_title" name="song_title" required>
+
+        <label for="author">作者:</label>
+        <input type="text" id="author" name="author">
+
+        <label for="music_key">音樂調:</label>
+        <input type="text" id="music_key" name="music_key">
+
+        <label for="category">分類:</label>
+        <input type="text" id="category" name="category">
+
+        <label for="tags">標籤:</label>
+        <input type="text" id="tags" name="tags">
+
+        <label for="lyrics">歌詞:</label>
+        <textarea id="lyrics" name="lyrics" rows="4"></textarea>
+
+        <label for="tempo_start">節奏起始:</label>
+        <input type="number" id="tempo_start" name="tempo_start">
+
+        <label for="tempo_end">節奏結束:</label>
+        <input type="number" id="tempo_end" name="tempo_end">
+
+        <label for="source">來源:</label>
+        <input type="text" id="source" name="source">
+
+        <label for="path">上傳文件:</label>
+        <input type="file" id="path" name="path" required>
+
+        <label for="img_url">上傳封面圖片:</label>
+        <input type="file" id="img_url" name="img_url">
+
+        <label for="mp3_url">上傳MP3文件:</label>
+        <input type="file" id="mp3_url" name="mp3_url">
+
+        <button type="submit">創建歌曲</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的歌單</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .playlist-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #34495e;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .playlist-card {
+            background: #2c3e50;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .playlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .playlist-info {
+            margin: 10px 0;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #c0392b;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .create-playlist {
+            margin-bottom: 20px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: rgb(24, 23, 23);
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+        }
+        .modal-content .btn {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="playlist-container">
+        <h1>我的歌單</h1>
+        
+        <div class="create-playlist">
+            <button class="btn btn-primary" onclick="showCreatePlaylistModal()">
+                創建新歌單
+            </button>
+        </div>
+        
+        <div id="playlist-list">
+            {% if playlists %}
+                {% for playlist in playlists %}
+                    <div class="playlist-card">
+                        <div class="playlist-header">
+                            <h2>{{ playlist.name }}</h2>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('playlist.view_playlist', playlist_id=playlist.playlist_id) }}" 
+                                   class="btn btn-primary">查看</a>
+                                <a href="{{ url_for('playlist.export_playlist', playlist_id=playlist.playlist_id) }}" 
+                                   class="btn btn-secondary">匯出</a>
+                            </div>
+                        </div>
+                        <div class="playlist-info">
+                            <p>創建時間: {{ playlist.created_at }}</p>
+                            <p>歌曲數量: {{ playlist.song_count }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>還沒有創建任何歌單</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 新增歌單的 Modal -->
+    <div id="create-playlist-modal" class="modal">
+        <div class="modal-content">
+            <h2>創建新歌單</h2>
+            <input type="text" id="playlist-name" placeholder="輸入歌單名稱">
+            <button class="btn btn-primary" onclick="createPlaylist()">創建</button>
+            <button class="btn btn-secondary" onclick="hideCreatePlaylistModal()">取消</button>
+        </div>
+    </div>
+
+    <script>
+        function showCreatePlaylistModal() {
+            document.getElementById('create-playlist-modal').style.display = 'flex';
+        }
+
+        function hideCreatePlaylistModal() {
+            document.getElementById('create-playlist-modal').style.display = 'none';
+        }
+
+        function createPlaylist() {
+            const name = document.getElementById('playlist-name').value.trim();
+            if (!name) {
+                alert('請輸入歌單名稱');
+                return;
+            }
+
+            fetch('/playlist/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const createdAt = data.playlist.created_at ? new Date(data.playlist.created_at).toLocaleString() : '未知';
+                    const newItem = `
+                        <div class="playlist-card">
+                            <div class="playlist-header">
+                                <h2>${data.playlist.name}</h2>
+                                <div class="action-buttons">
+                                    <a href="/playlist/${data.playlist.playlist_id}" class="btn btn-primary">查看</a>
+                                    <a href="/playlist/${data.playlist.playlist_id}/export" class="btn btn-secondary">匯出</a>
+                                </div>
+                            </div>
+                            <div class="playlist-info">
+                                <p>創建時間: ${createdAt}</p>
+                                <p>歌曲數量: ${data.playlist.song_count ?? 0}</p>
+                            </div>
+                        </div>`;
+                    
+                    document.querySelector('#playlist-list').insertAdjacentHTML('afterbegin', newItem);
+                    hideCreatePlaylistModal();
+                    document.getElementById('playlist-name').value = '';
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('創建歌單失敗');
+            });
+        }
+    </script>
+</body>
+</html>

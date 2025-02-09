@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>歌曲資料庫</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            line-height: 1.6; /* 增加行高 */
+        }
+        header {
+            background-color: #34495e;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* 增加陰影效果 */
+            border-radius: 10px; /* 增加圓角 */
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase; /* 文字大寫 */
+        }
+        header p {
+            font-size: 1.1rem;
+            margin-top: 10px; /* 增加上邊距 */
+        }
+        nav {
+            text-align: center;
+            margin-top: 20px;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #ecf0f1;
+            font-size: 1.2rem;
+            transition: color 0.3s; /* 增加過渡效果 */
+        }
+        nav ul li a:hover {
+            color: #e74c3c;
+            text-decoration: underline; /* 滑鼠懸停時下劃線 */
+        }
+        .login-box {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px; /* 調整上邊距 */
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* 增加陰影效果 */
+        }
+        .login-box input {
+            background-color: #2c3e50;
+            border: 1px solid #ecf0f1;
+            color: #ecf0f1;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .login-box input:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+        .login-box button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s; /* 增加過渡效果 */
+        }
+        .login-box button:hover {
+            background-color: #c0392b;
+        }
+        .intro {
+            font-size: 1.3rem;
+            margin: 20px 0; /* 增加上下邊距 */
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.1); /* 增加背景色 */
+            padding: 20px; /* 增加內邊距 */
+            border-radius: 10px; /* 增加圓角 */
+        }
+        .login-box a {
+            text-decoration: none;
+            color: #ecf0f1;
+            font-size: 1rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .login-box a:hover {
+            color: #e74c3c;
+        }
+        footer {
+            background-color: #34495e;
+            padding: 20px;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 1rem;
+            border-radius: 10px; /* 增加圓角 */
+        }
+        footer p {
+            margin: 0;
+        }
+        .message-list {
+            list-style-type: none; /* 消息列表無樣式 */
+            padding: 0;
+        }
+        .message-list li {
+            margin: 10px 0; /* 消息間距 */
+            padding: 10px; /* 消息內邊距 */
+            border-radius: 5px; /* 消息圓角 */
+        }
+        .message-list .success {
+            background-color: #2ecc71; /* 成功消息背景色 */
+        }
+        .message-list .error {
+            background-color: #e74c3c; /* 錯誤消息背景色 */
+        }
+    </style>
+</head>
+<script>
+    function toggleForm() {
+        const currentUrl = window.location.href;
+        if (currentUrl.includes('login')) {
+            window.location.href = "{{ url_for('auth.register') }}"; // 切換到註冊頁面
+        } else {
+            window.location.href = "{{ url_for('auth.login') }}"; // 切換到登入頁面
+        }
+    }
+</script>
+<body>
+    <header>
+        <h1>歡迎來到歌曲資料庫</h1>
+        <p>一個讓你探索、管理和創建音樂的地方</p>
+    </header>
+
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('auth.found') }}">尋找歌曲</a></li>
+        </ul>
+    </nav>
+
+    <div class="intro">
+        <p>這個平台是為了讓你方便地管理、發現和創建音樂資料。無論你是想尋找歌曲、創建歌曲，還是探索不同的播放列表，這裡都有你需要的功能。</p>
+        <p>在這裡，你可以：</p>
+        <ul>
+            <li>搜尋各式各樣的歌曲資料庫</li>
+            <li>創建和管理你的播放列表</li>
+            <li>查看歌曲的詳細資料和相關信息</li>
+        </ul>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 歌曲資料庫. All rights reserved.</p>
+    </footer>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="message-list">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
